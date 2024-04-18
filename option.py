@@ -9,28 +9,27 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.naive_bayes import GaussianNB
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.metrics import accuracy_score, confusion_matrix, roc_auc_score, roc_curve
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 from sklearn.feature_selection import SelectKBest, chi2
-from sklearn.model_selection import GridSearchCV
-from sklearn.metrics import classification_report
-from sklearn.model_selection import StratifiedKFold
-from imblearn.under_sampling import RandomUnderSampler
 
 
 def load_df():
     df = pd.read_csv("data-before-mapping.csv")
     return df
 
+
 def load_df1():
     df1 = pd.read_csv("data-before-mapping.csv")
     return df1
 
+
 def load_df2():
     df2 = pd.read_csv("Data Cleaned.csv")
+    return df2
 
 
 def load_df3():
-    data = pd.read_csv("train.csv")
+    df3 = pd.read_csv("train.csv")
     return df3
 
 
@@ -54,7 +53,6 @@ def scatter_plot(df):
     Berdasarkan insight ini, supermarket dapat merancang strategi pemasaran yang lebih tepat sasaran untuk menarik konsumen dengan usia yang lebih tua. Misalnya, mereka dapat memperkenalkan paket promo khusus untuk kelompok usia tertentu atau menyediakan produk premium yang lebih sesuai dengan preferensi konsumen yang lebih tua. Dengan demikian, supermarket dapat meningkatkan penjualan dan memperluas pangsa pasar mereka di kalangan konsumen yang lebih tua.
     """
     st.write(text)
-
 
 
 def plot_custom_correlation(df1):
@@ -84,12 +82,11 @@ def plot_custom_correlation(df1):
     st.write(text)
 
 
-
 def compositionAndComparison(df2):
     # Hitung rata-rata fitur untuk setiap kelas
     df2['PurchaseCategory'].replace({0: 'Category_A', 1: 'Category_B', 2: 'Category_C'}, inplace=True)
     class_composition = df2.groupby('PurchaseCategory').mean()
-    
+
     plt.figure(figsize=(10, 6))
     sns.heatmap(class_composition.T, annot=True, cmap='YlGnBu', fmt='.2f')
     plt.title('Composition for each class')
@@ -117,7 +114,7 @@ def preprocess_data(df):
     df.drop('Product_ID', axis=1, inplace=True)
 
     # One-hot encoding for categorical features
-    categorical_columns = ['Gender', 'Age', 'City_Category', 'Stay_In_Current_City_Years']  
+    categorical_columns = ['Gender', 'Age', 'City_Category', 'Stay_In_Current_City_Years']
     df = pd.get_dummies(df, columns=categorical_columns)
 
     return df
@@ -192,3 +189,44 @@ def predict(df3):
         # Describe 'Purchase' feature
         st.write("## Purchase Feature Description")
         st.write(y_test.describe())
+
+
+def main():
+    menu = st.sidebar.selectbox("", ["Beranda", "Distribusi", "Hubungan", "Perbandingan dan Komposisi", "Predict"])
+
+    if menu == "Beranda":
+        st.title("Analisis Data Pembelian Pelanggan")
+        st.subheader("Pengaruh Umur, Gender, dan Pekerjaan terhadap Pembelian Pelanggan")
+        st.write("Analisis ini bertujuan untuk mengeksplorasi hubungan antara umur, gender, dan pekerjaan terhadap pola pembelian pelanggan. Dengan memahami faktor-faktor ini, perusahaan dapat mengoptimalkan strategi pemasaran dan penjualan untuk meningkatkan kepuasan pelanggan dan hasil penjualan.")
+        st.image("image/black friday.jpeg", use_column_width=True)
+
+        st.subheader("Pengaruh Pendidikan dan Status Pernikahan terhadap Pembelian Pelanggan")
+        st.write("Analisis akan menelusuri bagaimana pendidikan dan status pernikahan memengaruhi pola pembelian pelanggan. Informasi ini dapat digunakan untuk menyusun strategi pemasaran yang lebih terfokus dan menarik bagi segmen pelanggan tertentu.")
+        st.image("image/black friday2.jpeg", use_column_width=True)
+
+        st.subheader("Analisis Geografis Pembelian Pelanggan")
+        st.write("Analisis akan memperlihatkan pola pembelian pelanggan berdasarkan lokasi geografis. Hal ini dapat membantu perusahaan untuk menyesuaikan strategi pemasaran dan distribusi berdasarkan preferensi konsumen di berbagai daerah.")
+        st.image("image/black friday3.jpg", use_column_width=True)
+
+    elif menu == "Distribusi":
+        st.title("Data Distribusi")
+        df = load_df()
+        scatter_plot(df)
+
+    elif menu == "Hubungan":
+        st.title("Hubungan")
+        df1 = load_df1()
+        plot_custom_correlation(df1)
+
+    elif menu == "Perbandingan dan Komposisi":
+        st.title('Composition')
+        df2 = load_df2()  # Fixed the function call here
+        compositionAndComparison(df2)
+
+    elif menu == "Predict":
+        df3 = load_df3()  # Fixed the function call here
+        predict(df3)
+
+
+if __name__ == '__main__':
+    main()
