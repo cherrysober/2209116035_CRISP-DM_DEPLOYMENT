@@ -3,7 +3,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import altair as alt
-import matplotlib.pyplot as plt
 from streamlit_option_menu import *
 from option import *
 
